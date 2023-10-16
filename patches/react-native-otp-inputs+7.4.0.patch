@@ -1,0 +1,131 @@
+diff --git a/node_modules/react-native-otp-inputs/src/OtpInput.tsx b/node_modules/react-native-otp-inputs/src/OtpInput.tsx
+index d8a2453..3c85195 100644
+--- a/node_modules/react-native-otp-inputs/src/OtpInput.tsx
++++ b/node_modules/react-native-otp-inputs/src/OtpInput.tsx
+@@ -20,6 +20,8 @@ type Props = TextInputProps & {
+   handleTextChange: (text: string) => void;
+   inputValue: string;
+   handleKeyPress: (keyPressEvent: NativeSyntheticEvent<TextInputKeyPressEventData>) => void;
++  focused: boolean
++  setFocused: React.Dispatch<React.SetStateAction<boolean>>
+ };
+ 
+ const majorVersionIOS: number = parseInt(`${Platform.Version}`, 10);
+@@ -38,12 +40,15 @@ const OtpInput = forwardRef<TextInput, Props>(
+       placeholder,
+       selectTextOnFocus,
+       secureTextEntry,
++      focused,
++      setFocused,
++      // error,
+       ...rest
+     },
+     ref,
+   ) => {
+-    const [focused, setFocused] = useState(false);
+-
++// @ts-ignore
++    const {errorBorder, ...newfocusStyles } = focusStyles
+     useEffect(() => {
+       (ref as RefObject<TextInput>)?.current?.setNativeProps({
+         value: inputValue,
+@@ -60,30 +65,35 @@ const OtpInput = forwardRef<TextInput, Props>(
+         }),
+       [inputValue, rest],
+     );
+-
+     return (
+       // @ts-expect-error
+-      <View style={[inputContainerStyles, focused && focusStyles]}>
+-        {/* @ts-expect-error */}
+-        <TextInput
+-          autoFocus={autoFocus}
+-          onBlur={() => setFocused(false)}
+-          onChangeText={handleTextChange}
+-          onFocus={() => setFocused(true)}
+-          onKeyPress={handleKeyPress}
+-          placeholder={placeholder}
+-          ref={ref}
+-          secureTextEntry={secureTextEntry}
+-          // https://github.com/facebook/react-native/issues/18339
+-          selectTextOnFocus={Platform.select({
+-            ios: selectTextOnFocus,
+-            android: true,
+-          })}
+-          style={inputStyles}
+-          textContentType={isOTPSupported ? 'oneTimeCode' : 'none'}
+-          underlineColorAndroid="transparent"
+-          {...restProps}
+-        />
++      <View style={[inputContainerStyles, focused && newfocusStyles]}>
++        <View style={[{ borderWidth: 1, borderRadius: 9, borderColor: "transparent" }, focused && {
++          borderColor: errorBorder || focusStyles?.borderColor
++          // borderColor: '#004F71'
++        }]}>
++          {/* @ts-expect-error */}
++          <TextInput
++            autoFocus={autoFocus}
++            onBlur={() => setFocused(false)}
++            onChangeText={handleTextChange}
++            onFocus={() => setFocused(true)}
++            onKeyPress={handleKeyPress}
++            placeholder={placeholder}
++            ref={ref}
++            selectionColor={'#004F71'}
++            secureTextEntry={secureTextEntry}
++            // https://github.com/facebook/react-native/issues/18339
++            selectTextOnFocus={Platform.select({
++              ios: selectTextOnFocus,
++              android: true,
++            })}
++            style={inputStyles}
++            textContentType={isOTPSupported ? 'oneTimeCode' : 'none'}
++            underlineColorAndroid="transparent"
++            {...restProps}
++          />
++        </View>
+       </View>
+     );
+   },
+diff --git a/node_modules/react-native-otp-inputs/src/index.tsx b/node_modules/react-native-otp-inputs/src/index.tsx
+index 7fd9e45..9d97077 100644
+--- a/node_modules/react-native-otp-inputs/src/index.tsx
++++ b/node_modules/react-native-otp-inputs/src/index.tsx
+@@ -7,6 +7,7 @@ import React, {
+   useImperativeHandle,
+   useReducer,
+   useRef,
++  useState,
+ } from 'react';
+ import {
+   Keyboard,
+@@ -43,6 +44,7 @@ type Props = TextInputProps & {
+   isRTL?: boolean;
+   numberOfInputs: number;
+   testIDPrefix?: string;
++  error?: string;
+ };
+ 
+ const styles = StyleSheet.create({
+@@ -75,10 +77,12 @@ const OtpInputs = forwardRef<OtpInputsRef, Props>(
+       selectTextOnFocus = true,
+       style,
+       testIDPrefix = 'otpInput',
++      error,
+       ...restProps
+     },
+     ref,
+   ) => {
++    const [focused, setFocused] = useState(false);
+     const previousCopiedText = useRef<string>('');
+     const inputs = useRef<Array<RefObject<TextInput>>>([]);
+     const [{ otpCode, hasKeySupport }, dispatch] = useReducer(reducer, {}, () => ({
+@@ -271,6 +275,8 @@ const OtpInputs = forwardRef<OtpInputsRef, Props>(
+             secureTextEntry={secureTextEntry}
+             selectTextOnFocus={selectTextOnFocus}
+             testID={`${testIDPrefix}-${inputIndex}`}
++            focused={focused}
++            setFocused={setFocused}
+             {...restProps}
+           />
+         );

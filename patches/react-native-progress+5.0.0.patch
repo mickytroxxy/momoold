@@ -1,0 +1,40 @@
+diff --git a/node_modules/react-native-progress/Circle.js b/node_modules/react-native-progress/Circle.js
+index 79f0a9e..a307a08 100644
+--- a/node_modules/react-native-progress/Circle.js
++++ b/node_modules/react-native-progress/Circle.js
+@@ -56,6 +56,7 @@ export class ProgressCircle extends Component {
+     thickness: 3,
+     endAngle: 0.9,
+     allowFontScaling: true,
++    fill: 'transparent'
+   };
+ 
+   constructor(props, context) {
+@@ -168,6 +169,7 @@ export class ProgressCircle extends Component {
+           )}
+           {border ? (
+             <Arc
++            fill={fill}
+               radius={size / 2}
+               startAngle={0}
+               endAngle={(indeterminate ? endAngle * 2 : 2) * Math.PI}
+diff --git a/node_modules/react-native-progress/CircleSnail.js b/node_modules/react-native-progress/CircleSnail.js
+index cdf2b2d..120a811 100644
+--- a/node_modules/react-native-progress/CircleSnail.js
++++ b/node_modules/react-native-progress/CircleSnail.js
+@@ -129,6 +129,7 @@ export default class CircleSnail extends Component {
+       style,
+       thickness,
+       strokeCap,
++      fill,
+       ...restProps
+     } = this.props;
+ 
+@@ -177,6 +178,7 @@ export default class CircleSnail extends Component {
+             endAngle={this.state.endAngle}
+             strokeCap={strokeCap}
+             strokeWidth={thickness}
++            fill={fill}
+           />
+         </Svg>
+         {children}

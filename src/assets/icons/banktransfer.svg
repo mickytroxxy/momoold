@@ -1,0 +1,12 @@
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path
+        d="M3 10V8.5884C3 8.22524 3.19689 7.89062 3.51436 7.71425L11.5144 3.2698C11.8164 3.10201 12.1836 3.10201 12.4856 3.2698L20.4856 7.71425C20.8031 7.89062 21 8.22524 21 8.5884V10H3Z"
+        stroke="currentColor" />
+    <path d="M21 21H3V20C3 18.8954 3.89543 18 5 18H19C20.1046 18 21 18.8954 21 20V21Z"
+        stroke="currentColor" />
+    <rect x="4" y="10" width="3" height="8" stroke="currentColor" />
+    <rect x="10.5" y="10" width="3" height="8" stroke="currentColor" />
+    <rect x="17" y="10" width="3" height="8" stroke="currentColor" />
+    <circle cx="12" cy="6.90015" r="1.5" stroke="currentColor" />
+</svg>
+    
